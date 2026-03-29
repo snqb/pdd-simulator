@@ -1,0 +1,11 @@
+Model Information:
+* title:	Small Soviet Apartment Building - Khrushchevka
+* source:	https://sketchfab.com/3d-models/small-soviet-apartment-building-khrushchevka-feb9bd78483a4b71a13f3a6327aa0e2b
+* author:	AnatolApsik (https://sketchfab.com/AnatolApsik)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Small Soviet Apartment Building - Khrushchevka" (https://sketchfab.com/3d-models/small-soviet-apartment-building-khrushchevka-feb9bd78483a4b71a13f3a6327aa0e2b) by AnatolApsik (https://sketchfab.com/AnatolApsik) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

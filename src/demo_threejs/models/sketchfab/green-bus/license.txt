@@ -1,0 +1,11 @@
+Model Information:
+* title:	Green Bus Low Poly
+* source:	https://sketchfab.com/3d-models/green-bus-low-poly-9c662e4666c54d51a008541cb8cb1869
+* author:	cgart.com (https://sketchfab.com/goart)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Green Bus Low Poly" (https://sketchfab.com/3d-models/green-bus-low-poly-9c662e4666c54d51a008541cb8cb1869) by cgart.com (https://sketchfab.com/goart) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

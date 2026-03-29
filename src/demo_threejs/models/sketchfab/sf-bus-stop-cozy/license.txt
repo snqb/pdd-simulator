@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Bus Stop - A Cozy Waiting Spot
+* source:	https://sketchfab.com/3d-models/low-poly-bus-stop-a-cozy-waiting-spot-8abb4d6cd51443f2b62dc998b3fad09c
+* author:	DHRUV ITWALA (https://sketchfab.com/itwaladhruv)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Bus Stop - A Cozy Waiting Spot" (https://sketchfab.com/3d-models/low-poly-bus-stop-a-cozy-waiting-spot-8abb4d6cd51443f2b62dc998b3fad09c) by DHRUV ITWALA (https://sketchfab.com/itwaladhruv) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

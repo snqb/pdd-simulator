@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <!-- Vehicle types -->
+    <vType id="car" accel="2.6" decel="4.5" length="4.5" maxSpeed="13.89" color="0.7,0.7,0.7"/>
+    <vType id="courier_bike" vClass="bicycle" accel="1.2" decel="3.0" length="1.8" maxSpeed="6.0" color="1.0,0.9,0.0"/>
+
+    <!-- Car flows from each direction -->
+    <flow id="flow_SC" type="car" from="SC" to="CN" begin="0" end="120" probability="0.15"/>
+    <flow id="flow_NC" type="car" from="NC" to="CS" begin="0" end="120" probability="0.10"/>
+    <flow id="flow_EC" type="car" from="EC" to="CW" begin="0" end="120" probability="0.12"/>
+    <flow id="flow_WC" type="car" from="WC" to="CE" begin="0" end="120" probability="0.08"/>
+
+    <!-- Turning traffic -->
+    <flow id="flow_SC_turn" type="car" from="SC" to="CE" begin="0" end="120" probability="0.05"/>
+    <flow id="flow_EC_turn" type="car" from="EC" to="CN" begin="0" end="120" probability="0.05"/>
+
+    <!-- Courier on bicycle -->
+    <flow id="courier" type="courier_bike" from="EC" to="CW" begin="5" end="60" probability="0.08"/>
+
+    <!-- Pedestrians -->
+    <personFlow id="peds_NS" begin="0" end="120" probability="0.1">
+        <walk from="NC" to="CS"/>
+    </personFlow>
+    <personFlow id="peds_EW" begin="0" end="120" probability="0.08">
+        <walk from="EC" to="CW"/>
+    </personFlow>
+</routes>

@@ -1,0 +1,8 @@
+Model Information:
+* title:	Modular Russian Road Signs Vol. 1: Warning Pack
+* source:	https://sketchfab.com/3d-models/modular-russian-road-signs-vol-1-warning-pack-cbb17bd320ec4f5e8f4bb2db5ab4a253
+* author:	adamsite (https://sketchfab.com/adamsite)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

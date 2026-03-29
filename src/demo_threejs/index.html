@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ПДД Симулятор</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0a; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
+  canvas { display: block; }
+  #hud {
+    position: fixed; top: 20px; left: 20px; color: #fff;
+    font-size: 13px; line-height: 1.7;
+    background: rgba(0,0,0,0.55); padding: 14px 20px; border-radius: 10px;
+    backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08);
+  }
+  #hud h3 { font-size: 16px; margin-bottom: 6px; font-weight: 600; }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+  .dot.g { background: #3f3; box-shadow: 0 0 8px #3f3; }
+  .dot.y { background: #fc0; box-shadow: 0 0 8px #fc0; }
+  .dot.r { background: #f34; box-shadow: 0 0 8px #f34; }
+  #bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+  #bar button {
+    background: rgba(255,255,255,0.08); color: #bbb; border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px;
+    backdrop-filter: blur(10px); transition: 0.15s;
+  }
+  #bar button:hover { background: rgba(255,255,255,0.18); color: #fff; }
+  #bar button.on { background: rgba(100,180,255,0.2); border-color: rgba(100,180,255,0.35); color: #fff; }
+  #load { position: fixed; inset: 0; background: #111; display: flex; align-items: center;
+    justify-content: center; color: #888; font-size: 15px; z-index: 99; transition: opacity .6s; }
+  #load.ok { opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="load">Загрузка моделей… <span id="pct">0</span>%</div>
+<div id="hud">
+  <h3>ПДД — Перекрёсток</h3>
+  <div>Светофор: <span class="dot g" id="dot"></span><span id="ltxt">Зелёный</span></div>
+  <div>t = <span id="tm">0</span>с</div>
+</div>
+<div id="bar">
+  <button class="on" data-c="top">Сверху</button>
+  <button data-c="drv">Водитель</button>
+  <button data-c="ped">Пешеход</button>
+  <button data-c="cin">Кино</button>
+  <button id="pp">⏸</button>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+/* ── renderer ─────────────────────────── */
+const R = new THREE.WebGLRenderer({ antialias: true });
+R.setSize(innerWidth, innerHeight);
+R.setPixelRatio(Math.min(devicePixelRatio, 2));
+R.shadowMap.enabled = true;
+R.shadowMap.type = THREE.PCFSoftShadowMap;
+R.toneMapping = THREE.ACESFilmicToneMapping;
+R.toneMappingExposure = 1.15;
+document.body.appendChild(R.domElement);
+
+const S = new THREE.Scene();
+S.background = new THREE.Color(0x7ec8e3);
+S.fog = new THREE.Fog(0x7ec8e3, 60, 180);
+
+const cam = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, .1, 500);
+cam.position.set(5, 32, 35);
+const oc = new OrbitControls(cam, R.domElement);
+oc.enableDamping = true; oc.dampingFactor = .06;
+oc.maxPolarAngle = Math.PI / 2.05;
+
+/* ── light ────────────────────────────── */
+S.add(new THREE.AmbientLight(0xa0b8d0, .7));
+const sun = new THREE.DirectionalLight(0xfff0d0, 2.5);
+sun.position.set(40, 60, 30); sun.castShadow = true;
+sun.shadow.mapSize.set(4096, 4096);
+const sc = sun.shadow.camera;
+sc.left = sc.bottom = -70; sc.right = sc.top = 70; sc.near = 1; sc.far = 150;
+sun.shadow.bias = -.0003; sun.shadow.normalBias = .02;
+S.add(sun);
+S.add(new THREE.DirectionalLight(0xb0c8ff, .4).translateX(-30).translateY(40));
+S.add(new THREE.HemisphereLight(0x87ceeb, 0x3a7a20, .4));
+
+/* ── sky ──────────────────────────────── */
+const skyM = new THREE.ShaderMaterial({ side: THREE.BackSide,
+  uniforms: { t: { value: new THREE.Color(0x4488cc) }, b: { value: new THREE.Color(0xc8e0f0) } },
+  vertexShader: `varying vec3 vP; void main(){ vec4 w=modelMatrix*vec4(position,1.); vP=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,
+  fragmentShader: `uniform vec3 t,b; varying vec3 vP; void main(){ float h=normalize(vP).y*.5+.5; gl_FragColor=vec4(mix(b,t,h),1.); }` });
+S.add(new THREE.Mesh(new THREE.SphereGeometry(180,32,32), skyM));
+
+/* ── materials ────────────────────────── */
+const asph = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: .92 });
+const side = new THREE.MeshStandardMaterial({ color: 0xb5a590, roughness: .88 });
+const grass = new THREE.MeshStandardMaterial({ color: 0x4a8a2a, roughness: .95 });
+const mark = new THREE.MeshStandardMaterial({ color: 0xe8e8e8, roughness: .65 });
+
+/* ── ground + roads ───────────────────── */
+const gnd = new THREE.Mesh(new THREE.PlaneGeometry(300,300), grass);
+gnd.rotation.x = -Math.PI/2; gnd.position.y = -.05; gnd.receiveShadow = true; S.add(gnd);
+
+function road(w,h,x,z){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),asph); m.rotation.x=-Math.PI/2; m.position.set(x,.01,z); m.receiveShadow=true; S.add(m); }
+road(14,140,0,0); road(140,12,0,0);
+
+function sw(w,h,x,z){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,.18,h),side); m.position.set(x,.09,z); m.receiveShadow=true; m.castShadow=true; S.add(m); }
+sw(5,140,12,0); sw(5,140,-12,0); sw(140,4.5,0,10.5); sw(140,4.5,0,-10.5);
+
+// markings
+for(let i=-65;i<=65;i+=4){ if(Math.abs(i)<8)continue; const d=new THREE.Mesh(new THREE.PlaneGeometry(.18,2.2),mark); d.rotation.x=-Math.PI/2; d.position.set(0,.025,i); S.add(d); }
+for(let i=-65;i<=65;i+=4){ if(Math.abs(i)<9)continue; const d=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.18),mark); d.rotation.x=-Math.PI/2; d.position.set(i,.025,0); S.add(d); }
+[-6.9,6.9].forEach(x=>{ const l=new THREE.Mesh(new THREE.PlaneGeometry(.12,140),mark); l.rotation.x=-Math.PI/2; l.position.set(x,.02,0); S.add(l); });
+[-5.9,5.9].forEach(z=>{ const l=new THREE.Mesh(new THREE.PlaneGeometry(140,.12),mark); l.rotation.x=-Math.PI/2; l.position.set(0,.02,z); S.add(l); });
+
+// Bishkek-style yellow+white zebra
+const ymark = new THREE.MeshStandardMaterial({ color: 0xf0c820, roughness: .6 });
+function zebra(cx,cz,rot){ for(let i=-5;i<=5;i+=1.1){
+  const mat = (Math.round(i/.55) % 2 === 0) ? mark : ymark; // alternate white/yellow
+  const s=new THREE.Mesh(new THREE.PlaneGeometry(rot?.5:3.8,rot?3.8:.5),mat);
+  s.rotation.x=-Math.PI/2; s.position.set(cx+(rot?i:0),.03,cz+(rot?0:i)); S.add(s); } }
+zebra(0,-8.5,0); zebra(0,8.5,0); zebra(-9,0,1); zebra(9,0,1);
+
+// Yellow waffle marking in intersection center (Bishkek signature!)
+const waffle = new THREE.MeshStandardMaterial({ color: 0xf0c820, roughness: .6 });
+// Diamond grid lines
+for(let i=-6;i<=6;i+=1.8){
+  // diagonal lines one way
+  const l1 = new THREE.Mesh(new THREE.PlaneGeometry(16,.1), waffle);
+  l1.rotation.x = -Math.PI/2;
+  l1.rotation.z = Math.PI/4;
+  l1.position.set(i*.7, .035, i*.7);
+  S.add(l1);
+  // diagonal lines other way
+  const l2 = new THREE.Mesh(new THREE.PlaneGeometry(16,.1), waffle);
+  l2.rotation.x = -Math.PI/2;
+  l2.rotation.z = -Math.PI/4;
+  l2.position.set(-i*.7, .035, i*.7);
+  S.add(l2);
+}
+// Outer yellow border of waffle zone
+const border = new THREE.MeshStandardMaterial({ color: 0xf0c820, roughness: .5 });
+[[-6,0,12,.15],[ 6,0,12,.15],[0,-6,.15,12],[0,6,.15,12]].forEach(([x,z,w,h])=>{
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(w,h), border);
+  b.rotation.x=-Math.PI/2; b.position.set(x,.04,z); S.add(b);
+});
+
+/* ── loader ───────────────────────────── */
+const L = new GLTFLoader();
+const db = {};
+const manifest = [
+  // Kenney cars
+  ...['sedan','sedan-sports','taxi','suv','delivery','van','police'].map(n=>({n, p:`models/${n}.glb`})),
+  // Poly Pizza traffic light
+  {n:'tl', p:'models/traffic_light.glb'},
+  // KayKit buildings + props
+  ...['building_A','building_B','building_C','building_D','building_E','building_F','building_G','building_H',
+      'car_sedan','car_taxi','car_hatchback',
+      'trafficlight_A','trafficlight_B','streetlight',
+      'bench','bush','dumpster','firehydrant','watertower',
+      'road_junction','road_straight_crossing'
+  ].map(n=>({n:`kk_${n}`, p:`models/kaykit/${n}.gltf`})),
+  // Kenney trees
+  ...['tree-large','tree-small','fence-low'].map(n=>({n, p:`models/${n}.glb`})),
+  // Bishkek assets (Poly Pizza)
+  {n:'poplar', p:'models/poplar-tree-1.glb'},
+  {n:'city_bus', p:'models/bus-3.glb'},
+  {n:'apt_block', p:'models/apartment-2.glb'},
+  // Sketchfab soviet buildings
+  {n:'sf_soviet_8k', p:'models/sketchfab/soviet-apartment-8k/scene.gltf'},
+  {n:'sf_panel', p:'models/sketchfab/soviet-panel-house/scene.gltf'},
+  {n:'sf_khrush', p:'models/sketchfab/khrushchevka-small/scene.gltf'},
+  // Sketchfab buses
+  {n:'sf_bus_modern', p:'models/sketchfab/modern-bus/scene.gltf'},
+  {n:'sf_bus_green', p:'models/sketchfab/green-bus/scene.gltf'},
+  // Sketchfab road signs — skip for now (they load as one big set)
+  // {n:'sf_signs', p:'models/sketchfab/russian-signs/scene.gltf'},
+  // {n:'sf_signs_warn', p:'models/sketchfab/russian-signs-warning/scene.gltf'},
+  // Sketchfab poplar
+  {n:'sf_poplar', p:'models/sketchfab/poplar-tree-sf/scene.gltf'},
+];
+
+let loaded = 0;
+function load(item){
+  return new Promise(res => {
+    L.load(item.p, g => {
+      db[item.n] = g.scene;
+      g.scene.traverse(c => { if(c.isMesh){ c.castShadow=true; c.receiveShadow=true; } });
+      loaded++; document.getElementById('pct').textContent = Math.round(loaded/manifest.length*100);
+      res();
+    }, undefined, () => { loaded++; res(); });
+  });
+}
+
+function put(n,x,y,z,s=1,ry=0){
+  if(!db[n]) return null;
+  const m = db[n].clone();
+  m.position.set(x,y,z); m.scale.setScalar(s); m.rotation.y=ry;
+  S.add(m); return m;
+}
+
+/* ── build scene ──────────────────────── */
+const mv = { cars: [], cyc: null, peds: [] };
+
+function build(){
+  // Soviet buildings — Sketchfab realism
+  // soviet-apartment-8k: max=1.7 → scale 18 for ~30m building
+  // soviet-panel-house: max=179 → scale 0.14 for ~25m
+  // khrushchevka-small: max=15 → scale 2 for ~13m
+  const bld = [
+    // Main corners — authentic soviet buildings
+    ['sf_soviet_8k', -30, 0, -28, 18, 0],
+    ['sf_soviet_8k', 32, 0, 28, 18, Math.PI],
+    ['sf_khrush', 30, 0, -28, 2, Math.PI/2],
+    ['sf_khrush', -30, 0, 28, 2, -Math.PI/2],
+    ['sf_panel', -40, 0, 0, 0.14, Math.PI/2],
+    ['sf_panel', 44, 0, -5, 0.14, -Math.PI/2],
+    // Far buildings
+    ['sf_soviet_8k', -30, 0, -60, 18, 0.1],
+    ['sf_khrush', 35, 0, 60, 2, Math.PI],
+    ['sf_soviet_8k', 40, 0, -55, 16, -Math.PI/4],
+    ['sf_panel', -42, 0, 50, 0.12, 0.5],
+  ];
+  bld.forEach(b => put(...b));
+
+  // KayKit traffic lights
+  put('kk_trafficlight_A', 8, 0, 7.5, 3, 0);
+  put('kk_trafficlight_A', -8, 0, -7.5, 3, Math.PI);
+  put('kk_trafficlight_B', -7.5, 0, 7.5, 3, Math.PI/2);
+  put('kk_trafficlight_B', 7.5, 0, -7.5, 3, -Math.PI/2);
+
+  // Russian road signs — warning pack is one big set, too much for now
+  // TODO: extract individual signs from the pack in Blender
+  // For now, skip — use KayKit traffic lights only
+
+  // Streetlights
+  for(let z=-50; z<=50; z+=20){
+    put('kk_streetlight', 10, 0, z, 3, 0);
+    put('kk_streetlight', -10, 0, z, 3, Math.PI);
+  }
+
+  // Props
+  put('kk_bench', 13, 0, -4, 3, 0);
+  put('kk_bench', 13, 0, 4, 3, 0);
+  put('kk_bench', -13, 0, -2, 3, Math.PI);
+  put('kk_dumpster', 14, 0, -18, 2.5, .3);
+  put('kk_firehydrant', 10, 0, 6, 3, 0);
+  put('kk_firehydrant', -10, 0, -6, 3, 0);
+  put('kk_watertower', 35, 0, -40, 3, 0);
+
+  // Bushes
+  [[-12,14],[-12,-14],[12,14],[12,-14],[-12,25],[12,-25],[-14,35],[14,-35]].forEach(([x,z]) =>
+    put('kk_bush', x, 0, z, 3+Math.random(), Math.random()*6));
+
+  // Poplar trees (Bishkek!) + Kenney as fill
+  const treeSpots = [[-16,18],[-16,-18],[16,18],[16,-18],[-16,35],[16,-35],[-16,-40],[16,40],[20,30],[-20,-30],[-25,12],[25,-12],[-20,50],[20,-50],[-18,0],[18,0],[-16,45],[16,-45]];
+  treeSpots.forEach(([x,z],i) => {
+    // Mostly poplars, some Kenney for variety
+    if (i % 4 !== 3) {
+      put('poplar', x, 0, z, 0.6+Math.random()*0.2, Math.random()*6);
+    } else {
+      put('tree-large', x, 0, z, 2+Math.random()*.6, Math.random()*6);
+    }
+  });
+
+  // Fences
+  for(let i=-40;i<40;i+=3.5){
+    if(Math.abs(i)<14) continue;
+    put('fence-low', 14.5, 0, i, 2, 0);
+    put('fence-low', -14.5, 0, i, 2, Math.PI);
+  }
+
+  // ── Moving vehicles (Kenney) ──
+  const c1 = put('sedan', -3.3, 0, 18, 1.8, 0);
+  if(c1) mv.cars.push({ m:c1, ax:'z', sp:-7, lo:-65, hi:65, stop:[-8,0], dir:'ns' });
+  const c2 = put('sedan-sports', 3.3, 0, -20, 1.8, Math.PI);
+  if(c2) mv.cars.push({ m:c2, ax:'z', sp:6, lo:-65, hi:65, stop:[0,8], dir:'ns' });
+  const c3 = put('taxi', 25, 0, 3.2, 1.8, -Math.PI/2);
+  if(c3) mv.cars.push({ m:c3, ax:'x', sp:-5.5, lo:-65, hi:65, stop:[-8,0], dir:'ew' });
+  const c4 = put('suv', -30, 0, -3.2, 1.8, Math.PI/2);
+  if(c4) mv.cars.push({ m:c4, ax:'x', sp:5, lo:-65, hi:65, stop:[0,8], dir:'ew' });
+
+  // City buses (Sketchfab)
+  // modern-bus: max=26 → scale 0.4; green-bus: max=9.8 → scale 1.2
+  const bus = put('sf_bus_green', 3.3, 0, -40, 1.2, 0);
+  if(bus) mv.cars.push({ m:bus, ax:'z', sp:-4, lo:-65, hi:65, stop:[-8,0], dir:'ns' });
+
+  const bus2 = put('sf_bus_modern', -25, 0, -3.2, 0.4, Math.PI/2);
+  if(bus2) mv.cars.push({ m:bus2, ax:'x', sp:4.5, lo:-65, hi:65, stop:[0,8], dir:'ew' });
+
+  // Parked
+  put('police', 13, 0, -15, 1.8, .05);
+  put('van', -13, 0, 22, 1.8, Math.PI);
+  put('delivery', -13, 0, -25, 1.8, 0);
+
+  // Cyclist (delivery as proxy)
+  const cy = put('delivery', 5.5, 0, -15, .9, Math.PI);
+  if(cy) mv.cyc = { m:cy, sp:4 };
+
+  // Pedestrians (capsule)
+  const pMats = [0x4477aa, 0xe8ddd0, 0x335544, 0xcc6644, 0x7744aa].map(c =>
+    new THREE.MeshStandardMaterial({ color:c, roughness:.75 }));
+  function ped(x,z,mi){
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(.22,.8,4,8), pMats[mi]);
+    body.position.y = .85; body.castShadow = true; g.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.16,8,8),
+      new THREE.MeshStandardMaterial({ color:0xd4a070, roughness:.8 }));
+    head.position.y = 1.55; head.castShadow = true; g.add(head);
+    g.position.set(x, 0, z); S.add(g); return g;
+  }
+  const pd = [
+    { sx:12, sz:-4, ex:12, ez:7, sp:1.3 },
+    { sx:12.8, sz:-3, ex:12.8, ez:6, sp:1 },
+    { sx:-12, sz:3, ex:-12, ez:-5, sp:1.15 },
+    { sx:-11.5, sz:-8, ex:-11.5, ez:8, sp:.9 },
+    { sx:11, sz:12, ex:11, ez:25, sp:1.1 },
+  ];
+  pd.forEach((p,i) => mv.peds.push({ m:ped(p.sx,p.sz,i), ...p, t:i*.3 }));
+}
+
+/* ── traffic light logic ──────────────── */
+let tlT=0, tlP='green';
+const CY = { green:8, yellow:2, red:8, redYellow:1.5 };
+
+function updTL(dt){
+  tlT += dt;
+  if(tlT > CY[tlP]){
+    tlT = 0;
+    tlP = tlP==='green'?'yellow':tlP==='yellow'?'red':tlP==='red'?'redYellow':'green';
+    const ns = tlP==='green'?'g':tlP==='redYellow'?'y':tlP==='yellow'?'y':'r';
+    document.getElementById('dot').className = 'dot '+ns;
+    document.getElementById('ltxt').textContent =
+      ns==='g'?'Зелёный':ns==='y'?'Жёлтый':'Красный';
+  }
+}
+
+/* ── camera ────────────────────────────── */
+let curC = 'top';
+const cams = {
+  top: { p:[5,32,35], t:[0,0,0] },
+  drv: { p:[-3.3,2,21], t:[-3.3,1.5,0] },
+  ped: { p:[14,1.7,-3], t:[0,1,-3] },
+  cin: null,
+};
+
+document.getElementById('bar').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if(!b) return;
+  if(b.id === 'pp'){ paused=!paused; b.textContent=paused?'▶':'⏸'; return; }
+  const c = b.dataset.c; if(!c) return;
+  curC = c;
+  if(cams[c]){ cam.position.set(...cams[c].p); oc.target.set(...cams[c].t); }
+  document.querySelectorAll('#bar button[data-c]').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+});
+
+/* ── loop ─────────────────────────────── */
+let paused = false, time = 0;
+const clock = new THREE.Clock();
+
+function tick(){
+  requestAnimationFrame(tick);
+  const dt = Math.min(clock.getDelta(), .05);
+  oc.update();
+  if(paused){ R.render(S,cam); return; }
+  time += dt;
+
+  updTL(dt);
+  const nsGo = tlP==='green' || tlP==='redYellow';
+  const ewGo = tlP==='red';
+
+  mv.cars.forEach(c => {
+    const go = c.dir==='ns' ? nsGo : ewGo;
+    const p = c.m.position[c.ax];
+    if(go || p<c.stop[0] || p>c.stop[1]) c.m.position[c.ax] += c.sp * dt;
+    if(c.m.position[c.ax] > c.hi) c.m.position[c.ax] = c.lo;
+    if(c.m.position[c.ax] < c.lo) c.m.position[c.ax] = c.hi;
+  });
+
+  if(mv.cyc){
+    mv.cyc.m.position.z += mv.cyc.sp * dt;
+    mv.cyc.m.position.x = 5.5 + Math.sin(time*2.5)*.12;
+    if(mv.cyc.m.position.z > 65) mv.cyc.m.position.z = -65;
+  }
+
+  mv.peds.forEach(p => {
+    p.t += dt*p.sp*.07;
+    const f = Math.abs((p.t%2)-1);
+    p.m.position.x = THREE.MathUtils.lerp(p.sx, p.ex, f);
+    p.m.position.z = THREE.MathUtils.lerp(p.sz, p.ez, f);
+    p.m.position.y = Math.abs(Math.sin(time*p.sp*5))*.03;
+    p.m.rotation.y = p.t%2<1 ? 0 : Math.PI;
+  });
+
+  if(curC==='drv' && mv.cars[0]){
+    const c = mv.cars[0].m;
+    cam.position.set(c.position.x, 2.2, c.position.z+4);
+    oc.target.set(c.position.x, 1.5, c.position.z-15);
+  }
+  if(curC==='cin'){
+    cam.position.x = Math.cos(time*.08)*35;
+    cam.position.z = Math.sin(time*.08)*35;
+    cam.position.y = 14+Math.sin(time*.15)*4;
+    oc.target.set(0,2,0);
+  }
+
+  document.getElementById('tm').textContent = time.toFixed(1);
+  R.render(S,cam);
+}
+
+/* ── init ─────────────────────────────── */
+Promise.all(manifest.map(load)).then(() => {
+  document.getElementById('load').classList.add('ok');
+  build();
+  tick();
+});
+
+addEventListener('resize', () => {
+  cam.aspect = innerWidth/innerHeight;
+  cam.updateProjectionMatrix();
+  R.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

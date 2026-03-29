@@ -1,0 +1,11 @@
+Model Information:
+* title:	Poplar Tree - Low Poly
+* source:	https://sketchfab.com/3d-models/poplar-tree-low-poly-8cb89b8fb1cb400ba51fb84a25965a15
+* author:	Alan Zimmerman (https://sketchfab.com/nenjo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Poplar Tree - Low Poly" (https://sketchfab.com/3d-models/poplar-tree-low-poly-8cb89b8fb1cb400ba51fb84a25965a15) by Alan Zimmerman (https://sketchfab.com/nenjo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
