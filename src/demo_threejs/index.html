@@ -92,7 +92,18 @@ const skyM = new THREE.ShaderMaterial({ side: THREE.BackSide,
 S.add(new THREE.Mesh(new THREE.SphereGeometry(180,32,32), skyM));
 
 /* ── materials ────────────────────────── */
-const asph = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: .92 });
+// PBR asphalt texture (Poly Haven CC0)
+const texLoader = new THREE.TextureLoader();
+const asphTex = texLoader.load('models/asphalt_diff.jpg');
+asphTex.wrapS = asphTex.wrapT = THREE.RepeatWrapping;
+asphTex.repeat.set(20, 20);
+const asphRough = texLoader.load('models/asphalt_rough.jpg');
+asphRough.wrapS = asphRough.wrapT = THREE.RepeatWrapping;
+asphRough.repeat.set(20, 20);
+const asphNor = texLoader.load('models/asphalt_nor.jpg');
+asphNor.wrapS = asphNor.wrapT = THREE.RepeatWrapping;
+asphNor.repeat.set(20, 20);
+const asph = new THREE.MeshStandardMaterial({ map: asphTex, roughnessMap: asphRough, normalMap: asphNor, roughness: 0.95 });
 const side = new THREE.MeshStandardMaterial({ color: 0xb5a590, roughness: .88 });
 const grass = new THREE.MeshStandardMaterial({ color: 0x4a8a2a, roughness: .95 });
 const mark = new THREE.MeshStandardMaterial({ color: 0xe8e8e8, roughness: .65 });
@@ -173,11 +184,14 @@ const manifest = [
   // Sketchfab buses
   {n:'sf_bus_modern', p:'models/sketchfab/modern-bus/scene.gltf'},
   {n:'sf_bus_green', p:'models/sketchfab/green-bus/scene.gltf'},
-  // Sketchfab road signs — skip for now (they load as one big set)
-  // {n:'sf_signs', p:'models/sketchfab/russian-signs/scene.gltf'},
-  // {n:'sf_signs_warn', p:'models/sketchfab/russian-signs-warning/scene.gltf'},
-  // Sketchfab poplar
+  // Sketchfab poplar + bus stops
   {n:'sf_poplar', p:'models/sketchfab/poplar-tree-sf/scene.gltf'},
+  {n:'sf_bus_stop_cozy', p:'models/sketchfab/sf-bus-stop-cozy/scene.gltf'},
+  // New: office, glass, shop
+  {n:'office_bld', p:'models/office-building.glb'},
+  {n:'glass_bld', p:'models/glass-building.glb'},
+  {n:'shop1', p:'models/shop-1.glb'},
+  {n:'bus_stop_pp', p:'models/bus-stop-2.glb'},
 ];
 
 let loaded = 0;
@@ -215,6 +229,11 @@ function build(){
     ['sf_khrush', -30, 0, 28, 2, -Math.PI/2],
     ['sf_panel', -40, 0, 0, 0.14, Math.PI/2],
     ['sf_panel', 44, 0, -5, 0.14, -Math.PI/2],
+    // Modern buildings (mixed Bishkek — glass + office + shops)
+    ['office_bld', -42, 0, 0, 12, Math.PI/2],
+    ['glass_bld', 44, 0, -5, 8, -Math.PI/2],
+    ['shop1', 14, 0, -20, 0.35, -Math.PI/2],
+    ['shop1', -14, 0, 20, 0.35, Math.PI/2],
     // Far buildings
     ['sf_soviet_8k', -30, 0, -60, 18, 0.1],
     ['sf_khrush', 35, 0, 60, 2, Math.PI],
@@ -222,6 +241,9 @@ function build(){
     ['sf_panel', -42, 0, 50, 0.12, 0.5],
   ];
   bld.forEach(b => put(...b));
+
+  // Bus stop shelter (sf_bus_stop_cozy is ~3m native, scale 1)
+  put('sf_bus_stop_cozy', 13, 0, 15, 1, -Math.PI/2);
 
   // KayKit traffic lights
   put('kk_trafficlight_A', 8, 0, 7.5, 3, 0);

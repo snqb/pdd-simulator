@@ -1,0 +1,56 @@
+{
+  "name": "Крестообразный перекрёсток",
+  "description": "Регулируемый перекрёсток со светофором. Центр Бишкека.",
+  "type": "intersection",
+  
+  "roads": {
+    "ns": { "width": 14, "length": 140 },
+    "ew": { "width": 12, "length": 140 }
+  },
+  
+  "trafficLight": {
+    "green": 8, "yellow": 2, "red": 8, "redYellow": 1.5
+  },
+  
+  "buildings": [
+    { "model": "sf_soviet_8k", "pos": [-30, 0, -28], "scale": 18, "rot": 0 },
+    { "model": "sf_soviet_8k", "pos": [32, 0, 28], "scale": 18, "rot": 3.14 },
+    { "model": "sf_khrush", "pos": [30, 0, -28], "scale": 2, "rot": 1.57 },
+    { "model": "sf_khrush", "pos": [-30, 0, 28], "scale": 2, "rot": -1.57 },
+    { "model": "office_bld", "pos": [-42, 0, 0], "scale": 12, "rot": 1.57 },
+    { "model": "glass_bld", "pos": [44, 0, -5], "scale": 8, "rot": 0 },
+    { "model": "shop1", "pos": [14, 0, -20], "scale": 0.8, "rot": -1.57 },
+    { "model": "sf_soviet_8k", "pos": [-30, 0, -60], "scale": 18, "rot": 0.1 },
+    { "model": "sf_khrush", "pos": [35, 0, 60], "scale": 2, "rot": 3.14 }
+  ],
+  
+  "vehicles": [
+    { "model": "sedan", "pos": [-3.3, 0, 18], "scale": 1.8, "rot": 0, "move": { "axis": "z", "speed": -7, "dir": "ns" }},
+    { "model": "sedan-sports", "pos": [3.3, 0, -20], "scale": 1.8, "rot": 3.14, "move": { "axis": "z", "speed": 6, "dir": "ns" }},
+    { "model": "taxi", "pos": [25, 0, 3.2], "scale": 1.8, "rot": -1.57, "move": { "axis": "x", "speed": -5.5, "dir": "ew" }},
+    { "model": "suv", "pos": [-30, 0, -3.2], "scale": 1.8, "rot": 1.57, "move": { "axis": "x", "speed": 5, "dir": "ew" }},
+    { "model": "sf_bus_green", "pos": [3.3, 0, -40], "scale": 1.2, "rot": 0, "move": { "axis": "z", "speed": -4, "dir": "ns" }},
+    { "model": "sf_bus_modern", "pos": [-25, 0, -3.2], "scale": 0.4, "rot": 1.57, "move": { "axis": "x", "speed": 4.5, "dir": "ew" }}
+  ],
+  
+  "parked": [
+    { "model": "police", "pos": [13, 0, -15], "scale": 1.8, "rot": 0.05 },
+    { "model": "van", "pos": [-13, 0, 22], "scale": 1.8, "rot": 3.14 },
+    { "model": "delivery", "pos": [-13, 0, -25], "scale": 1.8, "rot": 0 }
+  ],
+  
+  "props": {
+    "busStops": [
+      { "model": "sf_bus_stop_cozy", "pos": [13, 0, 15], "scale": 2, "rot": -1.57 }
+    ],
+    "trees": {
+      "spots": [[-16,18],[-16,-18],[16,18],[16,-18],[-16,35],[16,-35],[-16,-40],[16,40],[20,30],[-20,-30],[-25,12],[25,-12],[-20,50],[20,-50],[-18,0],[18,0]],
+      "poplarsRatio": 0.75
+    }
+  },
+
+  "zebras": {
+    "style": "yellow-white",
+    "waffleMarking": true
+  }
+}

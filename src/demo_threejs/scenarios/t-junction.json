@@ -1,0 +1,48 @@
+{
+  "name": "Т-образный перекрёсток",
+  "description": "Главная дорога + примыкание справа. Знак 'Уступи дорогу'. Микрорайон.",
+  "type": "t-junction",
+  
+  "roads": {
+    "main": { "width": 12, "length": 140, "direction": "ew" },
+    "side": { "width": 10, "length": 70, "direction": "s", "offset": 0 }
+  },
+  
+  "trafficLight": null,
+  "prioritySigns": ["yield_south"],
+  
+  "buildings": [
+    { "model": "sf_panel", "pos": [-35, 0, -25], "scale": 0.14, "rot": 0 },
+    { "model": "sf_panel", "pos": [35, 0, -25], "scale": 0.14, "rot": 0 },
+    { "model": "sf_khrush", "pos": [-25, 0, 25], "scale": 2, "rot": 0 },
+    { "model": "sf_khrush", "pos": [25, 0, 25], "scale": 2, "rot": 0 },
+    { "model": "shop1", "pos": [-10, 0, -15], "scale": 0.8, "rot": 0 },
+    { "model": "office_bld", "pos": [30, 0, 15], "scale": 10, "rot": 3.14 }
+  ],
+  
+  "vehicles": [
+    { "model": "sedan", "pos": [-40, 0, -3], "scale": 1.8, "rot": 1.57, "move": { "axis": "x", "speed": 6, "dir": "main" }},
+    { "model": "suv", "pos": [40, 0, 3], "scale": 1.8, "rot": -1.57, "move": { "axis": "x", "speed": -5, "dir": "main" }},
+    { "model": "taxi", "pos": [3, 0, 30], "scale": 1.8, "rot": 0, "move": { "axis": "z", "speed": -3, "dir": "side" }},
+    { "model": "sf_bus_green", "pos": [-30, 0, 3], "scale": 1.2, "rot": 1.57, "move": { "axis": "x", "speed": 4, "dir": "main" }}
+  ],
+  
+  "props": {
+    "busStops": [
+      { "model": "sf_bus_stop_cozy", "pos": [15, 0, -8], "scale": 2, "rot": 0 }
+    ],
+    "trees": {
+      "spots": [[-15,15],[-15,-15],[15,15],[15,-15],[-20,30],[20,-20],[-30,10],[30,10]],
+      "poplarsRatio": 0.5
+    }
+  },
+
+  "zebras": {
+    "style": "yellow-white",
+    "waffleMarking": false,
+    "locations": [
+      { "pos": [0, 8], "rotated": false },
+      { "pos": [-8, 0], "rotated": true }
+    ]
+  }
+}
