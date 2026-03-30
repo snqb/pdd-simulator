@@ -51,7 +51,10 @@ cd src/demo_threejs && python3 -m http.server 8767
 ### Environment
 - `poplar` — Poplar tree (Poly Pizza, ×0.7). Bishkek signature silhouette
 - `sf_bus_stop_cozy` — Glass bus stop shelter (×1)
-- `lp_people` — Lowpoly people group (×0.025)
+- `lp_people` — Lowpoly people group (×0.025) — deprecated, use nathan
+- `nathan` — Nathan Walking 3D Man (×0.01 = 1.85m, ×0.007 for background)
+- `people_standing` — Standing people group, untextured (×0.012)
+- `sf_traffic_light` — Realistic traffic light (not wired yet)
 - `bicycle` — Bicycle model (×0.02)
 - KayKit props: streetlights, benches, bushes, hydrants, dumpsters
 
@@ -91,15 +94,13 @@ Create/edit `preview-*.html` — loads models in a grid with OrbitControls and s
 ## What's Not Done (P0→P2)
 
 **P0:**
-- Q3 pedestrian still barely visible — need a SINGLE PERSON model, not group. lp_people at 0.08 is a blob
-- BUS STOP label → "Аялдама" / "Остановка"
+- Q3/Q6/Q7 cameras clip into buildings — need diagonal cameras like Q1/Q4 pattern (see TODO-NEXT-SESSION.md)
 - Vehicle turns (currently straight only)
 
 **P1:**
-- Each scenario needs visual QA — take screenshot, judge if scene matches question, fix positions. Use `visual-qa-loop` skill: audit all → batch fix → verify. MAX 3 ROUNDS.
+- Wire sf_traffic_light (replace KayKit traffic lights)
 - JSON config driving scene (configs exist, loader doesn't)
 - T-junction second location
-- More scenarios (10+, from real ПДД КР exam questions)
 
 **P2:**
 - Sound (engines, steps, signals)

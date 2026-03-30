@@ -1,59 +1,44 @@
-# Next Session — DO THIS
+# Next Session — Camera Tuning
 
-## Context
-`cd ~/Projects/pdd-simulator && python3 -m http.server 19876 --directory src/demo_threejs`
-Live: https://snqb.github.io/pdd-simulator/
+## What's done
+- ✅ Nathan Walking pedestrian model (CC-BY, realistic, 21K faces)
+- ✅ 10 quiz scenarios (ПДД КР exam questions)
+- ✅ "Остановка / Аялдама" bus stop label
+- ✅ Background peds hidden during quiz
+- ✅ Traffic light "off" state
+- ✅ Orbit controls during quiz (user can rotate camera)
 
-## P0 — Fix before anything else
+## What needs fixing
 
-### 1. Pedestrian model — VISIBLE, NOT low-poly blob
-Current `lp_people` (Sketchfab lowpoly-people) is a group of blue silhouettes — invisible at scene scale.
+### Camera positions for Q3, Q6, Q7
+These 3 scenarios have cameras that clip into buildings (scene is dark).
 
-Need: ONE realistic person model. Search Sketchfab:
-- "realistic person walking" downloadable CC-BY
-- "human character rigged" — Mixamo style
-- NOT low-poly, NOT stylized — consistent with Sketchfab car/building style
+**Root cause**: buildings at x=±30, sidewalks at x=±12, shops at x=14.  
+Cameras must stay within the "street canyon" or be high enough to clear buildings.
 
-Download with: `TOKEN=$(pass api/sketchfab)` + download recipe from AGENTS.md
+**Working camera patterns** (copy these):
+- Q1: `(14, 14, 14)` looking at `(0,0,0)` — diagonal from SE
+- Q4: `(0, 18, 18)` looking at `(0,0,0)` — straight from south, high  
 
-### 2. Every question must match its scene — VISUAL QA LOOP
-Use `visual-qa-loop` skill STRICTLY:
-1. Screenshot all 5 questions (NO EDITS)
-2. Write issue list per question: does scene match description? Y/N + why
-3. Batch fix ALL positions/cameras/scales
-4. Re-screenshot and verify
-5. MAX 3 ROUNDS
+**Broken cameras to fix**:
+- Q3 pedestrian: needs to see zebra at z=-8.5. Try: `(5, 18, 10)` → `(0, 0, -8)`
+- Q6 right turn: needs to see zebra + Toyota at intersection. Try: `(5, 18, 10)` → `(-3, 0, -6)`
+- Q7 overtake: needs truck at z=22 + Toyota at z=32. Try: `(5, 18, 40)` → `(-3, 0, 26)`
 
-Known issues from last session:
-- Q1 (7/10): cars too far from intersection  
-- Q2 (8/10): Toyota on waffle marking, should be before stop-line
-- Q3 (5/10): **PEDESTRIAN NOT VISIBLE** — main P0
-- Q4 (9/10): perfect, don't touch
-- Q5 (8/10): Toyota partially hidden behind bus
+**Test method**: Open in REAL browser (not ABP), click through quiz, verify visually.
+ABP headless is unreliable for timing (scenarios load slowly, clicks race).
 
-### 3. BUS STOP → Остановка / Аялдама
-The shelter model says "BUS STOP" in English. Either:
-- Replace with different model
-- Or overlay a 3D text sprite with Russian/Kyrgyz
+### Nathan scale reference
+- Native height: 185 units (centimeters)
+- Scale 0.01 = 1.85m person (correct but HUGE at close camera)
+- Scale 0.007 = 1.3m (good for background sidewalk)
+- In quiz: scale 0.01 is fine but camera must be y=18+ to look DOWN at person
 
-## P1 — After P0 is done
+### Models downloaded but not wired
+- `sf_traffic_light` — realistic Sketchfab traffic light (replaces KayKit)
+- `people_standing` — group of 6 standing silhouettes (untextured)
 
-### 4. More scenarios (10 total)
-Add 5 more from real ПДД КР exam:
-- Right turn with pedestrian
-- Roundabout priority  
-- T-junction yield
-- Overtaking rules
-- Night/rain conditions
-
-### 5. Style consistency
-All models should look realistic (Sketchfab style), NOT cartoon/low-poly.
-Current cartoon elements to replace:
-- KayKit traffic lights → find Sketchfab realistic ones
-- KayKit props (benches, hydrants) → OK for now, low priority
-
-## Rules for next session
-- **ABP browser testing** — always verify visually
-- **visual-qa-loop** — structured, not infinite circle
-- **Commit after each fix** — not after 50 changes
-- **Push to prod** — GitHub Pages auto-deploys on push
+## Local server
+```bash
+cd ~/Projects/pdd-simulator/src/demo_threejs && python3 -m http.server 19876
+```
