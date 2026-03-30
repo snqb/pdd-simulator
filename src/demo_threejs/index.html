@@ -33,13 +33,13 @@
     justify-content: center; color: #888; font-size: 15px; z-index: 99; transition: opacity .6s; }
   #load.ok { opacity: 0; pointer-events: none; }
 
-  /* Quiz overlay */
-  #quiz { position: fixed; inset: 0; display: none; z-index: 50; pointer-events: none; }
-  #quiz.active { display: flex; align-items: flex-end; justify-content: center; padding: 20px; pointer-events: auto; }
+  /* Quiz overlay — transparent, scene visible */
+  #quiz { position: fixed; bottom: 0; left: 0; right: 0; display: none; z-index: 50; pointer-events: none; }
+  #quiz.active { display: flex; justify-content: center; padding: 16px; pointer-events: auto; }
   #quiz-card {
-    background: rgba(15,15,20,0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px; padding: 24px 28px; max-width: 520px; width: 100%; color: #fff;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    background: rgba(10,12,18,0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 20px 24px; max-width: 480px; width: 100%; color: #fff;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
   }
   #quiz-card h4 { font-size: 14px; color: #8ab; margin-bottom: 6px; font-weight: 500; letter-spacing: 0.03em; }
   #quiz-card p.q { font-size: 17px; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
@@ -542,14 +542,20 @@ function tick(){
     cam.position.set(c.position.x, 2.2, c.position.z+4);
     oc.target.set(c.position.x, 1.5, c.position.z-15);
   }
-  if(curC==='cin'){
+  if(curC==='cin' && !quizActive){
     cam.position.x = Math.cos(time*.08)*35;
     cam.position.z = Math.sin(time*.08)*35;
     cam.position.y = 14+Math.sin(time*.15)*4;
     oc.target.set(0,2,0);
   }
 
-  document.getElementById('tm').textContent = time.toFixed(1);
+  // Animate quiz arrows (float + bob)
+  arrowMeshes.forEach(a => {
+    a.userData.t += dt * 3;
+    a.position.y = a.userData.baseY + Math.sin(a.userData.t) * 0.5;
+    a.rotation.y += dt * 2;
+  });
+
   R.render(S,cam);
 }
 
@@ -566,45 +572,120 @@ addEventListener('resize', () => {
   R.setSize(innerWidth, innerHeight);
 });
 
-/* ── Quiz System ──────────────────────── */
+/* ── Quiz System — scene-driven ────────── */
 let scenarios = [];
 let currentQ = 0;
 let score = 0;
 let quizActive = false;
+const sceneActors = []; // actors placed by current scenario
+const arrowMeshes = []; // 3D arrows
 
-// Load scenarios
+// Arrow geometry (reusable)
+const arrowGeo = new THREE.ConeGeometry(0.6, 2, 8);
+const arrowMatGreen = new THREE.MeshStandardMaterial({ color: 0x33ff55, emissive: 0x33ff55, emissiveIntensity: 1.5, transparent: true, opacity: 0.85 });
+const arrowMatRed = new THREE.MeshStandardMaterial({ color: 0xff3344, emissive: 0xff3344, emissiveIntensity: 1.5, transparent: true, opacity: 0.85 });
+const arrowMatYellow = new THREE.MeshStandardMaterial({ color: 0xffcc00, emissive: 0xffcc00, emissiveIntensity: 1.5, transparent: true, opacity: 0.85 });
+const arrowMatWhite = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1, transparent: true, opacity: 0.8 });
+
+function getArrowMat(color) {
+  return color === 'red' ? arrowMatRed : color === 'yellow' ? arrowMatYellow : color === 'green' ? arrowMatGreen : arrowMatWhite;
+}
+
 fetch('scenarios/quiz-scenarios.json')
   .then(r => r.json())
   .then(data => { scenarios = data; })
-  .catch(() => { console.warn('No quiz scenarios found'); });
+  .catch(() => { console.warn('No quiz scenarios'); });
 
 window.startQuiz = function() {
   document.getElementById('start-screen').classList.add('hidden');
   currentQ = 0;
   score = 0;
   quizActive = true;
+  paused = true; // freeze default traffic
   document.getElementById('qtotal').textContent = scenarios.length;
+  // Hide default moving cars
+  mv.cars.forEach(c => { if(c.m) c.m.visible = false; });
+  if(mv.cyc && mv.cyc.m) mv.cyc.m.visible = false;
   showQuestion();
 };
 
+function clearSceneActors() {
+  sceneActors.forEach(a => S.remove(a));
+  sceneActors.length = 0;
+  arrowMeshes.forEach(a => S.remove(a));
+  arrowMeshes.length = 0;
+}
+
 function showQuestion() {
   if (currentQ >= scenarios.length) { showResults(); return; }
+  clearSceneActors();
   const s = scenarios[currentQ];
+
   document.getElementById('qnum').textContent = currentQ + 1;
   document.getElementById('quiz-title').textContent = s.title;
   document.getElementById('quiz-question').textContent = s.question;
 
   // Set traffic light
-  if (s.trafficLight) {
-    tlP = s.trafficLight === 'green' ? 'green' : s.trafficLight === 'red' ? 'red' : 'yellow';
-    tlT = 999; // prevent auto-cycle during quiz
+  const setup = s.setup;
+  if (setup.trafficLight) {
+    tlP = setup.trafficLight;
+    tlT = 999;
     const ns = tlP === 'green' ? 'g' : tlP === 'yellow' ? 'y' : 'r';
     document.getElementById('dot').className = 'dot ' + ns;
     document.getElementById('ltxt').textContent =
       ns === 'g' ? 'Зелёный' : ns === 'y' ? 'Жёлтый' : 'Красный';
   }
 
-  // Options
+  // Position camera
+  if (setup.camera) {
+    const c = setup.camera;
+    cam.position.set(c.x, c.y, c.z);
+    oc.target.set(c.tx, c.ty, c.tz);
+    oc.update();
+    curC = 'quiz'; // custom camera mode
+  }
+
+  // Spawn scenario actors
+  if (setup.actors) {
+    setup.actors.forEach(a => {
+      const m = put(a.model, a.x, a.y, a.z, a.scale, a.rot);
+      if (m) {
+        sceneActors.push(m);
+        if (a.arrow) {
+          // Floating arrow (cone)
+          const arrow = new THREE.Mesh(arrowGeo, getArrowMat(a.highlight || 'white'));
+          arrow.position.set(a.x, 5, a.z);
+          arrow.userData.baseY = 5;
+          arrow.userData.t = Math.random() * Math.PI * 2;
+          S.add(arrow);
+          arrowMeshes.push(arrow);
+
+          // 3D text label (canvas sprite)
+          if (a.label) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = a.highlight === 'red' ? '#ff4444' : a.highlight === 'green' ? '#44ff66' : a.highlight === 'yellow' ? '#ffcc00' : '#ffffff';
+            ctx.font = 'bold 28px system-ui';
+            ctx.textAlign = 'center';
+            ctx.fillText(a.label, 128, 40);
+            const tex = new THREE.CanvasTexture(canvas);
+            const spriteMat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.position.set(a.x, 7, a.z);
+            sprite.scale.set(4, 1, 1);
+            S.add(sprite);
+            sceneActors.push(sprite);
+          }
+        }
+      }
+    });
+  }
+
+  // Hide camera bar during quiz
+  document.getElementById('bar').style.display = 'none';
+
+  // Build options
   const optsDiv = document.getElementById('quiz-options');
   optsDiv.innerHTML = '';
   s.options.forEach((opt, i) => {
@@ -615,33 +696,21 @@ function showQuestion() {
     optsDiv.appendChild(btn);
   });
 
-  // Hide explanation and next
   document.getElementById('explanation').classList.remove('show');
   document.getElementById('next-btn').classList.remove('show');
-
-  // Show quiz
   document.getElementById('quiz').classList.add('active');
-
-  // Pause traffic
-  paused = true;
-  // Wait 2 sec then unpause for dramatic effect
-  setTimeout(() => { paused = false; }, 500);
 }
 
 function answerQuestion(idx) {
   const s = scenarios[currentQ];
   const opts = document.querySelectorAll('.opt');
-
-  // Mark correct/wrong
   opts.forEach((o, i) => {
     o.classList.add('disabled');
     if (i === s.correct) o.classList.add('correct');
     if (i === idx && i !== s.correct) o.classList.add('wrong');
   });
-
   if (idx === s.correct) score++;
 
-  // Show explanation
   document.getElementById('expl-text').textContent = s.explanation;
   document.getElementById('expl-article').textContent = s.article;
   document.getElementById('explanation').classList.add('show');
@@ -652,25 +721,33 @@ function answerQuestion(idx) {
 
 window.nextQuestion = function() {
   currentQ++;
-  if (currentQ >= scenarios.length) {
-    showResults();
-  } else {
-    showQuestion();
-  }
+  if (currentQ >= scenarios.length) showResults();
+  else showQuestion();
 };
 
 function showResults() {
+  clearSceneActors();
   document.getElementById('quiz').classList.remove('active');
+  quizActive = false;
+  paused = false;
+  // Show default traffic again
+  mv.cars.forEach(c => { if(c.m) c.m.visible = true; });
+  if(mv.cyc && mv.cyc.m) mv.cyc.m.visible = true;
+  // Reset camera + show bar
+  cam.position.set(5, 32, 35);
+  oc.target.set(0, 0, 0);
+  curC = 'top';
+  document.getElementById('bar').style.display = 'flex';
+
   const pct = Math.round(score / scenarios.length * 100);
   const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : pct >= 40 ? '😐' : '📚';
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-text').textContent =
     `Правильных ответов: ${score} из ${scenarios.length} (${pct}%).\n` +
     (pct >= 80 ? 'Отлично! Вы хорошо знаете ПДД.' :
-     pct >= 60 ? 'Неплохо, но есть над чем поработать.' :
-     'Рекомендуем повторить правила дорожного движения.');
+     pct >= 60 ? 'Неплохо, но стоит повторить.' :
+     'Рекомендуем повторить правила.');
   document.getElementById('results').classList.add('show');
-  paused = false;
 }
 
 window.restartQuiz = function() {
