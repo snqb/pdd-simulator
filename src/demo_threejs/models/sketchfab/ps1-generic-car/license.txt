@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low poly Car (PS1 style)
+* source:	https://sketchfab.com/3d-models/low-poly-car-ps1-style-2677ffd57f9d4139996f5f79e7a91dac
+* author:	wanderer (https://sketchfab.com/wanderer2)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low poly Car (PS1 style)" (https://sketchfab.com/3d-models/low-poly-car-ps1-style-2677ffd57f9d4139996f5f79e7a91dac) by wanderer (https://sketchfab.com/wanderer2) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

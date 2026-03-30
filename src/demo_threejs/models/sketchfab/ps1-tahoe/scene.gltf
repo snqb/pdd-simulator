@@ -1,0 +1,746 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 805,
+      "max": [
+        -0.1489172875881195,
+        1.7140876054763794,
+        0.6081805229187012
+      ],
+      "min": [
+        -1.1355586051940918,
+        -1.5044668912887573,
+        -0.6081805229187012
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 9660,
+      "componentType": 5126,
+      "count": 805,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -0.9999797940254211,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 805,
+      "max": [
+        0.9765517711639404,
+        0.98341965675354
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 3498,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 19320,
+      "componentType": 5126,
+      "count": 88,
+      "max": [
+        -0.768608570098877,
+        -0.4003598988056183,
+        0.6987940669059753
+      ],
+      "min": [
+        -0.9065913558006287,
+        -0.526138961315155,
+        -0.6987935900688171
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 20376,
+      "componentType": 5126,
+      "count": 88,
+      "max": [
+        0.9735326766967773,
+        0.9705352187156677,
+        0.9922707080841064
+      ],
+      "min": [
+        -0.9735324382781982,
+        -0.9705350995063782,
+        -0.974175751209259
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 6440,
+      "componentType": 5126,
+      "count": 88,
+      "max": [
+        0.1306910663843155,
+        0.8059142827987671
+      ],
+      "min": [
+        0.028423216193914413,
+        0.718196451663971
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 13992,
+      "componentType": 5125,
+      "count": 384,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 21432,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.25999996066093445,
+        0.2599998712539673,
+        0.0900002121925354
+      ],
+      "min": [
+        -0.2600000202655792,
+        -0.26000016927719116,
+        -0.08999991416931152
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 22032,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.7462027072906494,
+        0.7462027072906494,
+        1.0
+      ],
+      "min": [
+        -0.7462027072906494,
+        -0.7462025880813599,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 7144,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.9771923422813416,
+        0.5178332924842834
+      ],
+      "min": [
+        0.6127595901489258,
+        0.02361351251602173
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 15528,
+      "componentType": 5125,
+      "count": 192,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 22632,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.25999996066093445,
+        0.2599998712539673,
+        0.08999991416931152
+      ],
+      "min": [
+        -0.2600000202655792,
+        -0.26000016927719116,
+        -0.0900002121925354
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 23232,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.7462027072906494,
+        0.7462027072906494,
+        1.0
+      ],
+      "min": [
+        -0.7462027072906494,
+        -0.7462025880813599,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 7544,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.9771923422813416,
+        0.5178332924842834
+      ],
+      "min": [
+        0.6127595901489258,
+        0.02361351251602173
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 16296,
+      "componentType": 5125,
+      "count": 192,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 23832,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.25999996066093445,
+        0.26000016927719116,
+        0.0900002121925354
+      ],
+      "min": [
+        -0.2600000202655792,
+        -0.2599998712539673,
+        -0.08999991416931152
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 24432,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.7462027072906494,
+        0.7462025880813599,
+        1.0
+      ],
+      "min": [
+        -0.7462027072906494,
+        -0.7462027072906494,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 7944,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.9779596924781799,
+        0.5177868604660034
+      ],
+      "min": [
+        0.612273097038269,
+        0.023466315120458603
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 17064,
+      "componentType": 5125,
+      "count": 192,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 25032,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.25999996066093445,
+        0.26000016927719116,
+        0.08999991416931152
+      ],
+      "min": [
+        -0.2600000202655792,
+        -0.2599998712539673,
+        -0.0900002121925354
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 25632,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.7462027072906494,
+        0.7462025880813599,
+        1.0
+      ],
+      "min": [
+        -0.7462027072906494,
+        -0.7462027072906494,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 8344,
+      "componentType": 5126,
+      "count": 50,
+      "max": [
+        0.9779596924781799,
+        0.5177868604660034
+      ],
+      "min": [
+        0.612273097038269,
+        0.023466315120458603
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 17832,
+      "componentType": 5125,
+      "count": 192,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "LolAndPop (https://sketchfab.com/LolAndPop)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/ps1-low-poly-2021-chevrolet-tahoe-z71-c63ed07ceac642b8ab2f360fe6ff016f",
+      "title": "Ps1 Low-poly 2021 Chevrolet Tahoe z71"
+    },
+    "generator": "Sketchfab-15.55.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 18600,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 8744,
+      "byteOffset": 18600,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 26232,
+      "byteOffset": 27344,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 53576,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_unlit"
+  ],
+  "images": [
+    {
+      "uri": "textures/21T_Body_baseColor.jpeg"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_unlit": {}
+      },
+      "name": "21T_Body",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_unlit": {}
+      },
+      "name": "21T_Rear_View_Mirror",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_unlit": {}
+      },
+      "name": "21T_Wheels",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "2021 Chevrolet Tahoe_21T Body_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "2021 Chevrolet Tahoe_21T Rear View Mirror_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Back L_21T Wheels_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 9,
+            "POSITION": 8,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Back R_21T Wheels_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 13,
+            "POSITION": 12,
+            "TEXCOORD_0": 14
+          },
+          "indices": 15,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Front L_21T Wheels_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 17,
+            "POSITION": 16,
+            "TEXCOORD_0": 18
+          },
+          "indices": 19,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Front R_21T Wheels_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 21,
+            "POSITION": 20,
+            "TEXCOORD_0": 22
+          },
+          "indices": 23,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        -1.0,
+        2.832769343193999e-16,
+        4.504636734104249e-32,
+        0.0,
+        -2.770065955897755e-32,
+        6.123234262925839e-17,
+        -1.0,
+        0.0,
+        -2.832769343193999e-16,
+        -1.0,
+        -6.123234262925839e-17,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "LowPoly Ps1 2021 Cheverolet Tahoe z71.fbx"
+    },
+    {
+      "children": [
+        3,
+        6,
+        8,
+        10,
+        12
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        7.549789959870878e-06,
+        0.0,
+        -99.99999999999972,
+        0.0,
+        0.0,
+        100.0,
+        0.0,
+        0.0,
+        99.99999999999972,
+        0.0,
+        7.549789959870878e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "2021 Chevrolet Tahoe"
+    },
+    {
+      "mesh": 0,
+      "name": "2021 Chevrolet Tahoe_21T Body_0"
+    },
+    {
+      "mesh": 1,
+      "name": "2021 Chevrolet Tahoe_21T Rear View Mirror_0"
+    },
+    {
+      "children": [
+        7
+      ],
+      "matrix": [
+        7.549789959870878e-06,
+        0.0,
+        -99.99999999999972,
+        0.0,
+        0.0,
+        100.0,
+        0.0,
+        0.0,
+        99.99999999999972,
+        0.0,
+        7.549789959870878e-06,
+        0.0,
+        51.30502700805664,
+        91.10492706298828,
+        25.421857833862305,
+        1.0
+      ],
+      "name": "Back L"
+    },
+    {
+      "mesh": 2,
+      "name": "Back L_21T Wheels_0"
+    },
+    {
+      "children": [
+        9
+      ],
+      "matrix": [
+        7.549789959870878e-06,
+        0.0,
+        -99.99999999999972,
+        0.0,
+        0.0,
+        100.0,
+        0.0,
+        0.0,
+        99.99999999999972,
+        0.0,
+        7.549789959870878e-06,
+        0.0,
+        -51.30502700805664,
+        91.10492706298828,
+        25.421852111816406,
+        1.0
+      ],
+      "name": "Back R"
+    },
+    {
+      "mesh": 3,
+      "name": "Back R_21T Wheels_0"
+    },
+    {
+      "children": [
+        11
+      ],
+      "matrix": [
+        7.549789959870878e-06,
+        0.0,
+        -99.99999999999972,
+        0.0,
+        0.0,
+        100.0,
+        0.0,
+        0.0,
+        99.99999999999972,
+        0.0,
+        7.549789959870878e-06,
+        0.0,
+        51.30502700805664,
+        -91.10492706298828,
+        25.421857833862305,
+        1.0
+      ],
+      "name": "Front L"
+    },
+    {
+      "mesh": 4,
+      "name": "Front L_21T Wheels_0"
+    },
+    {
+      "children": [
+        13
+      ],
+      "matrix": [
+        7.549789959870878e-06,
+        0.0,
+        -99.99999999999972,
+        0.0,
+        0.0,
+        100.0,
+        0.0,
+        0.0,
+        99.99999999999972,
+        0.0,
+        7.549789959870878e-06,
+        0.0,
+        -51.30502700805664,
+        -91.10492706298828,
+        25.421852111816406,
+        1.0
+      ],
+      "name": "Front R"
+    },
+    {
+      "mesh": 5,
+      "name": "Front R_21T Wheels_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ]
+}

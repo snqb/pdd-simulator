@@ -160,8 +160,16 @@ const border = new THREE.MeshStandardMaterial({ color: 0xf0c820, roughness: .5 }
 const L = new GLTFLoader();
 const db = {};
 const manifest = [
-  // Kenney cars
-  ...['sedan','sedan-sports','taxi','suv','delivery','van','police'].map(n=>({n, p:`models/${n}.glb`})),
+  // Sketchfab PS1-style vehicles (consistent realistic style)
+  {n:'car_corolla', p:'models/sketchfab/ps1-corolla/scene.gltf'},
+  {n:'car_golf', p:'models/sketchfab/ps1-vw-golf/scene.gltf'},
+  {n:'car_bmw', p:'models/sketchfab/lp-bmw-e46/scene.gltf'},
+  {n:'car_tahoe', p:'models/sketchfab/ps1-tahoe/scene.gltf'},
+  {n:'car_taxi', p:'models/sketchfab/taxi-stylized/scene.gltf'},
+  {n:'car_van', p:'models/sketchfab/ps1-white-van/scene.gltf'},
+  {n:'car_truck', p:'models/sketchfab/ps1-jp-truck/scene.gltf'},
+  {n:'lp_people', p:'models/sketchfab/lowpoly-people/scene.gltf'},
+  {n:'bicycle', p:'models/sketchfab/bicycle/scene.gltf'},
   // Poly Pizza traffic light
   {n:'tl', p:'models/traffic_light.glb'},
   // KayKit buildings + props
@@ -292,14 +300,19 @@ function build(){
     put('fence-low', -14.5, 0, i, 2, Math.PI);
   }
 
-  // ── Moving vehicles (Kenney) ──
-  const c1 = put('sedan', -3.3, 0, 18, 1.8, 0);
+  // ── Moving vehicles (Sketchfab realistic) ──
+  // ps1-corolla: max=11.5 → scale 0.4 ≈ 4.6m (real car size)
+  // ps1-vw-golf: max=20 → scale 0.22
+  // lp-bmw-e46: max=289 → scale 0.016
+  // ps1-tahoe: max=3.2 → scale 1.5
+  // taxi-stylized: max=5.8 → scale 0.8
+  const c1 = put('car_corolla', -3.3, 0, 18, 0.4, 0);
   if(c1) mv.cars.push({ m:c1, ax:'z', sp:-7, lo:-65, hi:65, stop:[-8,0], dir:'ns' });
-  const c2 = put('sedan-sports', 3.3, 0, -20, 1.8, Math.PI);
+  const c2 = put('car_golf', 3.3, 0, -20, 0.22, Math.PI);
   if(c2) mv.cars.push({ m:c2, ax:'z', sp:6, lo:-65, hi:65, stop:[0,8], dir:'ns' });
-  const c3 = put('taxi', 25, 0, 3.2, 1.8, -Math.PI/2);
+  const c3 = put('car_taxi', 25, 0, 3.2, 0.8, -Math.PI/2);
   if(c3) mv.cars.push({ m:c3, ax:'x', sp:-5.5, lo:-65, hi:65, stop:[-8,0], dir:'ew' });
-  const c4 = put('suv', -30, 0, -3.2, 1.8, Math.PI/2);
+  const c4 = put('car_tahoe', -30, 0, -3.2, 1.5, Math.PI/2);
   if(c4) mv.cars.push({ m:c4, ax:'x', sp:5, lo:-65, hi:65, stop:[0,8], dir:'ew' });
 
   // City buses (Sketchfab)
@@ -310,14 +323,21 @@ function build(){
   const bus2 = put('sf_bus_modern', -25, 0, -3.2, 0.4, Math.PI/2);
   if(bus2) mv.cars.push({ m:bus2, ax:'x', sp:4.5, lo:-65, hi:65, stop:[0,8], dir:'ew' });
 
-  // Parked
-  put('police', 13, 0, -15, 1.8, .05);
-  put('van', -13, 0, 22, 1.8, Math.PI);
-  put('delivery', -13, 0, -25, 1.8, 0);
+  // Parked vehicles
+  put('car_van', 13, 0, -15, 0.7, .05);
+  put('car_truck', -13, 0, 22, 2.5, Math.PI);
+  put('car_bmw', -13, 0, -25, 0.016, 0);
 
-  // Cyclist (delivery as proxy)
-  const cy = put('delivery', 5.5, 0, -15, .9, Math.PI);
-  if(cy) mv.cyc = { m:cy, sp:4 };
+  // Lowpoly people group (replace capsule pedestrians on sidewalks)
+  const ppl1 = put('lp_people', 12, 0, 0, 0.025, 0);
+  const ppl2 = put('lp_people', -12, 0, -5, 0.025, Math.PI);
+  const ppl3 = put('lp_people', 12, 0, 20, 0.02, Math.PI/4);
+
+  // Bicycle (cyclist on the road)  
+  const bike = put('bicycle', 5.5, 0, -15, 0.02, Math.PI);
+  if(bike) mv.cyc = { m:bike, sp:4 };
+
+  // Cyclist already placed above with bicycle model
 
   // Pedestrians (capsule)
   const pMats = [0x4477aa, 0xe8ddd0, 0x335544, 0xcc6644, 0x7744aa].map(c =>

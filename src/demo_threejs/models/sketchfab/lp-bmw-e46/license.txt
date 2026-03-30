@@ -1,0 +1,11 @@
+Model Information:
+* title:	BMW E46 1998
+* source:	https://sketchfab.com/3d-models/bmw-e46-1998-ecc42a37c7e2409b9fd05665512843ce
+* author:	slowpoly (https://sketchfab.com/slowpoly)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "BMW E46 1998" (https://sketchfab.com/3d-models/bmw-e46-1998-ecc42a37c7e2409b9fd05665512843ce) by slowpoly (https://sketchfab.com/slowpoly) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
