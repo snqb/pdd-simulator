@@ -1,0 +1,11 @@
+Model Information:
+* title:	3d people standing smooth
+* source:	https://sketchfab.com/3d-models/3d-people-standing-smooth-55ffd432506d4f58a6a79eb7e5c666a5
+* author:	dchant design (https://sketchfab.com/dchant)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "3d people standing smooth" (https://sketchfab.com/3d-models/3d-people-standing-smooth-55ffd432506d4f58a6a79eb7e5c666a5) by dchant design (https://sketchfab.com/dchant) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

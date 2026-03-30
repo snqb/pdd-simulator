@@ -1,0 +1,11 @@
+Model Information:
+* title:	Traffic Lights [Street Assets Vol. 02]
+* source:	https://sketchfab.com/3d-models/traffic-lights-street-assets-vol-02-ab3efdd259a54d4aba5f878eacbe3f20
+* author:	Alt (https://sketchfab.com/whisper.alt)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Traffic Lights [Street Assets Vol. 02]" (https://sketchfab.com/3d-models/traffic-lights-street-assets-vol-02-ab3efdd259a54d4aba5f878eacbe3f20) by Alt (https://sketchfab.com/whisper.alt) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

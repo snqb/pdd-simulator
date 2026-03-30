@@ -286,6 +286,9 @@ const manifest = [
   {n:'car_van', p:'models/sketchfab/ps1-white-van/scene.gltf'},
   {n:'car_truck', p:'models/sketchfab/ps1-jp-truck/scene.gltf'},
   {n:'lp_people', p:'models/sketchfab/lowpoly-people/scene.gltf'},
+  {n:'nathan', p:'models/sketchfab/nathan-walking/scene.gltf'},
+  {n:'people_standing', p:'models/sketchfab/people-standing/scene.gltf'},
+  {n:'sf_traffic_light', p:'models/sketchfab/traffic-lights-street/scene.gltf'},
   {n:'bicycle', p:'models/sketchfab/bicycle/scene.gltf'},
   // KayKit props only (buildings removed — using Sketchfab)
   ...['trafficlight_A','trafficlight_B','streetlight',
@@ -319,6 +322,7 @@ function load(item){
       db[item.n] = g.scene;
       g.scene.traverse(c => { if(c.isMesh){ c.castShadow=true; c.receiveShadow=true; } });
       loaded++; document.getElementById('pct').textContent = Math.round(loaded/manifest.length*100);
+      window._db = db; // expose for debugging
       res();
     }, undefined, () => { loaded++; res(); });
   });
@@ -362,6 +366,23 @@ function build(){
 
   // Bus stop shelter (sf_bus_stop_cozy is ~3m native, scale 1)
   put('sf_bus_stop_cozy', 13, 0, 15, 1, -Math.PI/2);
+
+  // "Остановка" label above bus stop (replaces English "BUS STOP")
+  {
+    const c = document.createElement('canvas');
+    c.width = 512; c.height = 128;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#1a5c2a'; ctx.fillRect(0, 0, 512, 128);
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 44px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText('Остановка / Аялдама', 256, 52);
+    ctx.font = '28px system-ui'; ctx.fillStyle = '#ccc';
+    ctx.fillText('🚌  Автобусная', 256, 100);
+    const tex = new THREE.CanvasTexture(c);
+    const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+    const spr = new THREE.Sprite(mat);
+    spr.position.set(13, 4.5, 15); spr.scale.set(5, 1.25, 1);
+    S.add(spr);
+  }
 
   // KayKit traffic lights
   put('kk_trafficlight_A', 8, 0, 7.5, 3, 0);
@@ -429,10 +450,17 @@ function build(){
   put('car_truck', -13, 0, 22, 2.5, Math.PI);
   put('car_bmw', -13, 0, -25, 0.016, 0);
 
-  // Lowpoly people group (replace capsule pedestrians on sidewalks)
-  const ppl1 = put('lp_people', 12, 0, 0, 0.025, 0);
-  const ppl2 = put('lp_people', -12, 0, -5, 0.025, Math.PI);
-  const ppl3 = put('lp_people', 12, 0, 20, 0.02, Math.PI/4);
+  // Pedestrians on sidewalks — realistic Nathan model (small scale for background)
+  // nathan: native height ~185 units → scale 0.007 = 1.3m
+  const bgPeds = [];
+  let p;
+  p = put('nathan', 12, 0, 2, 0.007, 0); if(p) bgPeds.push(p);
+  p = put('nathan', -12, 0, -5, 0.007, Math.PI); if(p) bgPeds.push(p);
+  p = put('nathan', 12, 0, 20, 0.007, Math.PI/4); if(p) bgPeds.push(p);
+  // standing people groups for background depth
+  p = put('people_standing', -12, 0, 15, 0.012, 0); if(p) bgPeds.push(p);
+  p = put('people_standing', 13, 0, -10, 0.012, Math.PI/2); if(p) bgPeds.push(p);
+  mv.bgPeds = bgPeds;
 
   // Bicycle (cyclist on the road)  
   const bike = put('bicycle', 5.5, 0, -15, 0.02, Math.PI);
@@ -597,15 +625,18 @@ fetch('scenarios/quiz-scenarios.json')
   .catch(() => { console.warn('No quiz scenarios'); });
 
 window.startQuiz = function() {
+  if (!scenarios.length) { console.warn('Scenarios not loaded yet'); return; }
   document.getElementById('start-screen').classList.add('hidden');
   currentQ = 0;
   score = 0;
   quizActive = true;
   paused = true; // freeze default traffic
   document.getElementById('qtotal').textContent = scenarios.length;
-  // Hide default moving cars
+  // Hide default moving cars and background pedestrians
   mv.cars.forEach(c => { if(c.m) c.m.visible = false; });
   if(mv.cyc && mv.cyc.m) mv.cyc.m.visible = false;
+  if(mv.bgPeds) mv.bgPeds.forEach(p => { p.visible = false; });
+  mv.peds.forEach(p => { if(p.m) p.m.visible = false; });
   showQuestion();
 };
 
@@ -630,10 +661,19 @@ function showQuestion() {
   if (setup.trafficLight) {
     tlP = setup.trafficLight;
     tlT = 999;
-    const ns = tlP === 'green' ? 'g' : tlP === 'yellow' ? 'y' : 'r';
-    document.getElementById('dot').className = 'dot ' + ns;
-    document.getElementById('ltxt').textContent =
-      ns === 'g' ? 'Зелёный' : ns === 'y' ? 'Жёлтый' : 'Красный';
+    if (tlP === 'off') {
+      document.getElementById('dot').className = 'dot';
+      document.getElementById('dot').style.background = '#555';
+      document.getElementById('dot').style.boxShadow = 'none';
+      document.getElementById('ltxt').textContent = 'Выключен';
+    } else {
+      const ns = tlP === 'green' ? 'g' : tlP === 'yellow' ? 'y' : 'r';
+      document.getElementById('dot').className = 'dot ' + ns;
+      document.getElementById('dot').style.background = '';
+      document.getElementById('dot').style.boxShadow = '';
+      document.getElementById('ltxt').textContent =
+        ns === 'g' ? 'Зелёный' : ns === 'y' ? 'Жёлтый' : 'Красный';
+    }
   }
 
   // Position camera
@@ -734,6 +774,8 @@ function showResults() {
   // Show default traffic again
   mv.cars.forEach(c => { if(c.m) c.m.visible = true; });
   if(mv.cyc && mv.cyc.m) mv.cyc.m.visible = true;
+  if(mv.bgPeds) mv.bgPeds.forEach(p => { p.visible = true; });
+  mv.peds.forEach(p => { if(p.m) p.m.visible = true; });
   // Reset camera + show bar
   cam.position.set(5, 32, 35);
   oc.target.set(0, 0, 0);
