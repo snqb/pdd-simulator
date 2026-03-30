@@ -91,15 +91,15 @@ Create/edit `preview-*.html` — loads models in a grid with OrbitControls and s
 ## What's Not Done (P0→P2)
 
 **P0:**
+- Q3 pedestrian still barely visible — need a SINGLE PERSON model, not group. lp_people at 0.08 is a blob
+- BUS STOP label → "Аялдама" / "Остановка"
 - Vehicle turns (currently straight only)
-- Quiz overlay ("Кто проедет первым?")
-- Russian labels (BUS STOP → Аялдама)
 
 **P1:**
+- Each scenario needs visual QA — take screenshot, judge if scene matches question, fix positions. Use `visual-qa-loop` skill: audit all → batch fix → verify. MAX 3 ROUNDS.
 - JSON config driving scene (configs exist, loader doesn't)
 - T-junction second location
-- Pedestrians crossing zebra (currently walk on sidewalk only)
-- Driver cam position (currently shows car roof)
+- More scenarios (10+, from real ПДД КР exam questions)
 
 **P2:**
 - Sound (engines, steps, signals)
