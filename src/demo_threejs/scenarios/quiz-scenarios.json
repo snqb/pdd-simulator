@@ -3,16 +3,46 @@
     "id": "green-straight",
     "title": "Проезд на зелёный",
     "question": "Зелёный сигнал. Кто может проехать?",
-    "options": ["Только Toyota", "Только Такси", "Обе машины", "Никто"],
+    "options": [
+      "Только Toyota",
+      "Только Такси",
+      "Обе машины",
+      "Никто"
+    ],
     "correct": 2,
     "explanation": "На зелёный сигнал все, движущиеся прямо, проезжают перекрёсток.",
     "article": "ПДД КР, п. 6.2",
     "setup": {
       "trafficLight": "green",
-      "camera": {"x": 12, "y": 15, "z": 12, "tx": 0, "ty": 0, "tz": 0},
+      "camera": {
+        "x": 12,
+        "y": 15,
+        "z": 12,
+        "tx": 0,
+        "ty": 0,
+        "tz": 0
+      },
       "actors": [
-        {"model": "car_corolla", "x": -3, "y": 0, "z": 12, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true},
-        {"model": "car_taxi", "x": 3, "y": 0, "z": -12, "rot": 3.14, "scale": 0.8, "label": "Такси", "arrow": true}
+        {
+          "model": "car_corolla",
+          "x": -3,
+          "y": 0,
+          "z": 10,
+          "rot": 0,
+          "scale": 0.4,
+          "label": "Toyota",
+          "arrow": true
+        },
+        {
+          "model": "car_taxi",
+          "x": 3,
+          "y": 0,
+          "z": -10,
+          "rot": 3.14,
+          "scale": 0.8,
+          "label": "Такси",
+          "arrow": true
+        }
       ]
     }
   },
@@ -20,15 +50,37 @@
     "id": "red-stop",
     "title": "Красный сигнал",
     "question": "Красный свет. Что делает водитель Toyota?",
-    "options": ["Проезжает", "Останавливается", "Снижает скорость", "Сигналит и едет"],
+    "options": [
+      "Проезжает",
+      "Останавливается",
+      "Снижает скорость",
+      "Сигналит и едет"
+    ],
     "correct": 1,
     "explanation": "Красный запрещает движение. Обязан остановиться перед стоп-линией.",
     "article": "ПДД КР, п. 6.2",
     "setup": {
       "trafficLight": "red",
-      "camera": {"x": 6, "y": 10, "z": 18, "tx": -3, "ty": 0, "tz": 10},
+      "camera": {
+        "x": 6,
+        "y": 10,
+        "z": 20,
+        "tx": -3,
+        "ty": 0,
+        "tz": 13
+      },
       "actors": [
-        {"model": "car_corolla", "x": -3, "y": 0, "z": 10, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true, "highlight": "red"}
+        {
+          "model": "car_corolla",
+          "x": -3,
+          "y": 0,
+          "z": 13,
+          "rot": 0,
+          "scale": 0.4,
+          "label": "Toyota",
+          "arrow": true,
+          "highlight": "red"
+        }
       ]
     }
   },
@@ -36,16 +88,47 @@
     "id": "pedestrian-zebra",
     "title": "Пешеход на зебре",
     "question": "Пешеход переходит по зебре. Что делает водитель?",
-    "options": ["Сигналит", "Уступает дорогу", "Объезжает", "Ускоряется"],
+    "options": [
+      "Сигналит",
+      "Уступает дорогу",
+      "Объезжает",
+      "Ускоряется"
+    ],
     "correct": 1,
     "explanation": "Водитель обязан уступить пешеходу на нерегулируемом переходе.",
     "article": "ПДД КР, п. 14.1",
     "setup": {
       "trafficLight": "green",
-      "camera": {"x": 10, "y": 10, "z": -2, "tx": -1, "ty": 1, "tz": -8.5},
+      "camera": {
+        "x": 10,
+        "y": 10,
+        "z": -2,
+        "tx": -1,
+        "ty": 1,
+        "tz": -8.5
+      },
       "actors": [
-        {"model": "car_corolla", "x": -3, "y": 0, "z": -4, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true},
-        {"model": "lp_people", "x": 0, "y": 0, "z": -8.5, "rot": 1.57, "scale": 0.035, "label": "Пешеход", "arrow": true, "highlight": "green"}
+        {
+          "model": "car_corolla",
+          "x": -3,
+          "y": 0,
+          "z": -4,
+          "rot": 0,
+          "scale": 0.4,
+          "label": "Toyota",
+          "arrow": true
+        },
+        {
+          "model": "lp_people",
+          "x": -1,
+          "y": 0,
+          "z": -8.5,
+          "rot": 1.57,
+          "scale": 0.08,
+          "label": "Пешеход",
+          "arrow": true,
+          "highlight": "green"
+        }
       ]
     }
   },
@@ -53,15 +136,37 @@
     "id": "yellow-dilemma",
     "title": "Жёлтый сигнал",
     "question": "Жёлтый загорелся. Такси уже на перекрёстке. Что делать?",
-    "options": ["Остановиться на месте", "Завершить проезд", "Задний ход", "Ждать зелёного"],
+    "options": [
+      "Остановиться на месте",
+      "Завершить проезд",
+      "Задний ход",
+      "Ждать зелёного"
+    ],
     "correct": 1,
     "explanation": "Если при жёлтом нельзя остановиться без экстренного торможения — завершает проезд.",
     "article": "ПДД КР, п. 6.14",
     "setup": {
       "trafficLight": "yellow",
-      "camera": {"x": 0, "y": 18, "z": 18, "tx": 0, "ty": 0, "tz": 0},
+      "camera": {
+        "x": 0,
+        "y": 18,
+        "z": 18,
+        "tx": 0,
+        "ty": 0,
+        "tz": 0
+      },
       "actors": [
-        {"model": "car_taxi", "x": 1, "y": 0, "z": 1, "rot": -1.57, "scale": 0.8, "label": "Такси", "arrow": true, "highlight": "yellow"}
+        {
+          "model": "car_taxi",
+          "x": 1,
+          "y": 0,
+          "z": 1,
+          "rot": -1.57,
+          "scale": 0.8,
+          "label": "Такси",
+          "arrow": true,
+          "highlight": "yellow"
+        }
       ]
     }
   },
@@ -69,16 +174,47 @@
     "id": "bus-stop",
     "title": "Автобус на остановке",
     "question": "Автобус высаживает людей. Можно обогнать?",
-    "options": ["Да, если свободно", "Нет, запрещено", "Только справа", "Только медленно"],
+    "options": [
+      "Да, если свободно",
+      "Нет, запрещено",
+      "Только справа",
+      "Только медленно"
+    ],
     "correct": 1,
     "explanation": "Обгон вблизи остановок запрещён — ограниченная видимость пешеходов.",
     "article": "ПДД КР, п. 11.4",
     "setup": {
       "trafficLight": "green",
-      "camera": {"x": -8, "y": 14, "z": 22, "tx": 2, "ty": 0, "tz": 15},
+      "camera": {
+        "x": -8,
+        "y": 14,
+        "z": 22,
+        "tx": 2,
+        "ty": 0,
+        "tz": 15
+      },
       "actors": [
-        {"model": "sf_bus_green", "x": 4, "y": 0, "z": 15, "rot": 0, "scale": 1.2, "label": "Автобус", "arrow": true, "highlight": "red"},
-        {"model": "car_corolla", "x": -3, "y": 0, "z": 22, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true}
+        {
+          "model": "sf_bus_green",
+          "x": 4,
+          "y": 0,
+          "z": 15,
+          "rot": 0,
+          "scale": 1.2,
+          "label": "Автобус",
+          "arrow": true,
+          "highlight": "red"
+        },
+        {
+          "model": "car_corolla",
+          "x": -3,
+          "y": 0,
+          "z": 22,
+          "rot": 0,
+          "scale": 0.4,
+          "label": "Toyota",
+          "arrow": true
+        }
       ]
     }
   }
