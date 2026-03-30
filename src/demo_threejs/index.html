@@ -64,7 +64,7 @@ document.body.appendChild(R.domElement);
 
 const S = new THREE.Scene();
 S.background = new THREE.Color(0x7ec8e3);
-S.fog = new THREE.Fog(0x7ec8e3, 60, 180);
+S.fog = new THREE.Fog(0x7ec8e3, 80, 250);
 
 const cam = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, .1, 500);
 cam.position.set(5, 32, 35);
@@ -170,19 +170,12 @@ const manifest = [
   {n:'car_truck', p:'models/sketchfab/ps1-jp-truck/scene.gltf'},
   {n:'lp_people', p:'models/sketchfab/lowpoly-people/scene.gltf'},
   {n:'bicycle', p:'models/sketchfab/bicycle/scene.gltf'},
-  // Poly Pizza traffic light
-  {n:'tl', p:'models/traffic_light.glb'},
-  // KayKit buildings + props
-  ...['building_A','building_B','building_C','building_D','building_E','building_F','building_G','building_H',
-      'car_sedan','car_taxi','car_hatchback',
-      'trafficlight_A','trafficlight_B','streetlight',
+  // KayKit props only (buildings removed — using Sketchfab)
+  ...['trafficlight_A','trafficlight_B','streetlight',
       'bench','bush','dumpster','firehydrant','watertower',
-      'road_junction','road_straight_crossing'
   ].map(n=>({n:`kk_${n}`, p:`models/kaykit/${n}.gltf`})),
-  // Kenney trees
-  ...['tree-large','tree-small','fence-low'].map(n=>({n, p:`models/${n}.glb`})),
   // Bishkek assets (Poly Pizza)
-  {n:'poplar', p:'models/poplar-tree-1.glb'},
+  {n:'poplar', p:'models/poplar-pp.glb'},
   {n:'city_bus', p:'models/bus-3.glb'},
   {n:'apt_block', p:'models/apartment-2.glb'},
   // Sketchfab soviet buildings
@@ -284,21 +277,12 @@ function build(){
 
   // Poplar trees (Bishkek!) + Kenney as fill
   const treeSpots = [[-16,18],[-16,-18],[16,18],[16,-18],[-16,35],[16,-35],[-16,-40],[16,40],[20,30],[-20,-30],[-25,12],[25,-12],[-20,50],[20,-50],[-18,0],[18,0],[-16,45],[16,-45]];
-  treeSpots.forEach(([x,z],i) => {
-    // Mostly poplars, some Kenney for variety
-    if (i % 4 !== 3) {
-      put('poplar', x, 0, z, 0.6+Math.random()*0.2, Math.random()*6);
-    } else {
-      put('tree-large', x, 0, z, 2+Math.random()*.6, Math.random()*6);
-    }
+  // poplar-pp: max=13 → scale ~0.7 for ~9m tree (Poly Pizza, good proportions)
+  treeSpots.forEach(([x,z]) => {
+    put('poplar', x, 0, z, 0.6+Math.random()*0.25, Math.random()*6);
   });
 
-  // Fences
-  for(let i=-40;i<40;i+=3.5){
-    if(Math.abs(i)<14) continue;
-    put('fence-low', 14.5, 0, i, 2, 0);
-    put('fence-low', -14.5, 0, i, 2, Math.PI);
-  }
+  // Fences removed (Kenney asset deleted)
 
   // ── Moving vehicles (Sketchfab realistic) ──
   // ps1-corolla: max=11.5 → scale 0.4 ≈ 4.6m (real car size)
