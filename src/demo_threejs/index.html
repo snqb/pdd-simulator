@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>ПДД Симулятор</title>
+<title>ПДД Симулятор — Бишкек</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="Интерактивный тренажёр правил дорожного движения. Бишкек.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #0a0a0a; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
@@ -29,15 +32,129 @@
   #load { position: fixed; inset: 0; background: #111; display: flex; align-items: center;
     justify-content: center; color: #888; font-size: 15px; z-index: 99; transition: opacity .6s; }
   #load.ok { opacity: 0; pointer-events: none; }
+
+  /* Quiz overlay */
+  #quiz { position: fixed; inset: 0; display: none; z-index: 50; pointer-events: none; }
+  #quiz.active { display: flex; align-items: flex-end; justify-content: center; padding: 20px; pointer-events: auto; }
+  #quiz-card {
+    background: rgba(15,15,20,0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 24px 28px; max-width: 520px; width: 100%; color: #fff;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #quiz-card h4 { font-size: 14px; color: #8ab; margin-bottom: 6px; font-weight: 500; letter-spacing: 0.03em; }
+  #quiz-card p.q { font-size: 17px; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 12px 16px; cursor: pointer; font-size: 15px;
+    color: #ddd; transition: all 0.15s; text-align: left;
+  }
+  .opt:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: #fff; }
+  .opt.correct { background: rgba(40,180,80,0.25); border-color: rgba(40,180,80,0.5); color: #7efa9e; }
+  .opt.wrong { background: rgba(220,50,50,0.2); border-color: rgba(220,50,50,0.4); color: #ff8888; }
+  .opt.disabled { pointer-events: none; opacity: 0.5; }
+  #explanation {
+    display: none; margin-top: 14px; padding: 14px; background: rgba(255,255,255,0.05);
+    border-radius: 10px; font-size: 14px; line-height: 1.5; color: #bbb;
+  }
+  #explanation.show { display: block; }
+  #explanation .article { color: #8ab; font-weight: 500; margin-top: 6px; }
+  #next-btn {
+    display: none; margin-top: 14px; width: 100%; padding: 12px; border-radius: 10px;
+    background: rgba(100,180,255,0.2); border: 1px solid rgba(100,180,255,0.3);
+    color: #fff; font-size: 15px; cursor: pointer; transition: 0.15s;
+  }
+  #next-btn:hover { background: rgba(100,180,255,0.35); }
+  #next-btn.show { display: block; }
+
+  /* Start screen */
+  #start-screen {
+    position: fixed; inset: 0; z-index: 60; background: rgba(10,10,15,0.92);
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(20px);
+  }
+  #start-screen.hidden { display: none; }
+  #start-inner { text-align: center; color: #fff; max-width: 400px; padding: 20px; }
+  #start-inner h1 { font-size: 28px; margin-bottom: 8px; }
+  #start-inner h2 { font-size: 16px; font-weight: 400; color: #8ab; margin-bottom: 24px; }
+  #start-inner .emoji { font-size: 64px; margin-bottom: 16px; }
+  #start-btn {
+    padding: 14px 40px; border-radius: 12px; font-size: 17px; font-weight: 600;
+    background: linear-gradient(135deg, #3b82f6, #2563eb); border: none;
+    color: #fff; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+  }
+  #start-btn:hover { transform: scale(1.03); box-shadow: 0 6px 30px rgba(59,130,246,0.4); }
+  #score-display { margin-top: 16px; font-size: 14px; color: #888; }
+
+  /* Results screen */
+  #results { position: fixed; inset: 0; z-index: 55; display: none; background: rgba(10,10,15,0.92);
+    align-items: center; justify-content: center; backdrop-filter: blur(20px); }
+  #results.show { display: flex; }
+  #results-inner { text-align: center; color: #fff; max-width: 420px; padding: 20px; }
+  #results-inner h2 { font-size: 24px; margin-bottom: 12px; }
+  #results-inner .big { font-size: 64px; margin: 20px 0; }
+  #results-inner p { color: #aaa; font-size: 15px; line-height: 1.5; margin-bottom: 20px; }
+  #restart-btn {
+    padding: 12px 32px; border-radius: 10px; font-size: 16px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; cursor: pointer; transition: 0.15s;
+  }
+  #restart-btn:hover { background: rgba(255,255,255,0.2); }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    #hud { top: 10px; left: 10px; padding: 10px 14px; font-size: 12px; }
+    #hud h3 { font-size: 14px; }
+    #bar { bottom: 10px; gap: 4px; }
+    #bar button { padding: 6px 10px; font-size: 11px; }
+    #quiz-card { padding: 18px 20px; margin: 0 10px; }
+    #quiz-card p.q { font-size: 15px; }
+    .opt { padding: 10px 14px; font-size: 14px; }
+    #start-inner h1 { font-size: 22px; }
+  }
 </style>
 </head>
 <body>
 <div id="load">Загрузка моделей… <span id="pct">0</span>%</div>
+
+<div id="start-screen">
+  <div id="start-inner">
+    <div class="emoji">🚦</div>
+    <h1>ПДД Тренажёр</h1>
+    <h2>Бишкек • Интерактивные ситуации</h2>
+    <button id="start-btn" onclick="startQuiz()">Начать</button>
+    <div id="score-display"></div>
+  </div>
+</div>
+
 <div id="hud">
   <h3>ПДД — Перекрёсток</h3>
   <div>Светофор: <span class="dot g" id="dot"></span><span id="ltxt">Зелёный</span></div>
-  <div>t = <span id="tm">0</span>с</div>
+  <div>Вопрос <span id="qnum">0</span> / <span id="qtotal">0</span></div>
 </div>
+
+<div id="quiz">
+  <div id="quiz-card">
+    <h4 id="quiz-title"></h4>
+    <p class="q" id="quiz-question"></p>
+    <div class="opts" id="quiz-options"></div>
+    <div id="explanation">
+      <span id="expl-text"></span>
+      <div class="article" id="expl-article"></div>
+    </div>
+    <button id="next-btn" onclick="nextQuestion()">Следующий вопрос →</button>
+  </div>
+</div>
+
+<div id="results">
+  <div id="results-inner">
+    <h2>Результат</h2>
+    <div class="big" id="result-emoji"></div>
+    <p id="result-text"></p>
+    <button id="restart-btn" onclick="restartQuiz()">Пройти ещё раз</button>
+  </div>
+</div>
+
 <div id="bar">
   <button class="on" data-c="top">Сверху</button>
   <button data-c="drv">Водитель</button>
@@ -350,6 +467,7 @@ let tlT=0, tlP='green';
 const CY = { green:8, yellow:2, red:8, redYellow:1.5 };
 
 function updTL(dt){
+  if(quizActive) return; // freeze during quiz
   tlT += dt;
   if(tlT > CY[tlP]){
     tlT = 0;
@@ -447,6 +565,118 @@ addEventListener('resize', () => {
   cam.updateProjectionMatrix();
   R.setSize(innerWidth, innerHeight);
 });
+
+/* ── Quiz System ──────────────────────── */
+let scenarios = [];
+let currentQ = 0;
+let score = 0;
+let quizActive = false;
+
+// Load scenarios
+fetch('scenarios/quiz-scenarios.json')
+  .then(r => r.json())
+  .then(data => { scenarios = data; })
+  .catch(() => { console.warn('No quiz scenarios found'); });
+
+window.startQuiz = function() {
+  document.getElementById('start-screen').classList.add('hidden');
+  currentQ = 0;
+  score = 0;
+  quizActive = true;
+  document.getElementById('qtotal').textContent = scenarios.length;
+  showQuestion();
+};
+
+function showQuestion() {
+  if (currentQ >= scenarios.length) { showResults(); return; }
+  const s = scenarios[currentQ];
+  document.getElementById('qnum').textContent = currentQ + 1;
+  document.getElementById('quiz-title').textContent = s.title;
+  document.getElementById('quiz-question').textContent = s.question;
+
+  // Set traffic light
+  if (s.trafficLight) {
+    tlP = s.trafficLight === 'green' ? 'green' : s.trafficLight === 'red' ? 'red' : 'yellow';
+    tlT = 999; // prevent auto-cycle during quiz
+    const ns = tlP === 'green' ? 'g' : tlP === 'yellow' ? 'y' : 'r';
+    document.getElementById('dot').className = 'dot ' + ns;
+    document.getElementById('ltxt').textContent =
+      ns === 'g' ? 'Зелёный' : ns === 'y' ? 'Жёлтый' : 'Красный';
+  }
+
+  // Options
+  const optsDiv = document.getElementById('quiz-options');
+  optsDiv.innerHTML = '';
+  s.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuestion(i);
+    optsDiv.appendChild(btn);
+  });
+
+  // Hide explanation and next
+  document.getElementById('explanation').classList.remove('show');
+  document.getElementById('next-btn').classList.remove('show');
+
+  // Show quiz
+  document.getElementById('quiz').classList.add('active');
+
+  // Pause traffic
+  paused = true;
+  // Wait 2 sec then unpause for dramatic effect
+  setTimeout(() => { paused = false; }, 500);
+}
+
+function answerQuestion(idx) {
+  const s = scenarios[currentQ];
+  const opts = document.querySelectorAll('.opt');
+
+  // Mark correct/wrong
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === s.correct) o.classList.add('correct');
+    if (i === idx && i !== s.correct) o.classList.add('wrong');
+  });
+
+  if (idx === s.correct) score++;
+
+  // Show explanation
+  document.getElementById('expl-text').textContent = s.explanation;
+  document.getElementById('expl-article').textContent = s.article;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('next-btn').classList.add('show');
+  document.getElementById('next-btn').textContent =
+    currentQ < scenarios.length - 1 ? 'Следующий вопрос →' : 'Показать результат';
+}
+
+window.nextQuestion = function() {
+  currentQ++;
+  if (currentQ >= scenarios.length) {
+    showResults();
+  } else {
+    showQuestion();
+  }
+};
+
+function showResults() {
+  document.getElementById('quiz').classList.remove('active');
+  const pct = Math.round(score / scenarios.length * 100);
+  const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : pct >= 40 ? '😐' : '📚';
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-text').textContent =
+    `Правильных ответов: ${score} из ${scenarios.length} (${pct}%).\n` +
+    (pct >= 80 ? 'Отлично! Вы хорошо знаете ПДД.' :
+     pct >= 60 ? 'Неплохо, но есть над чем поработать.' :
+     'Рекомендуем повторить правила дорожного движения.');
+  document.getElementById('results').classList.add('show');
+  paused = false;
+}
+
+window.restartQuiz = function() {
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('start-screen').classList.remove('hidden');
+};
 </script>
 </body>
 </html>
