@@ -682,8 +682,9 @@ function showQuestion() {
     });
   }
 
-  // Hide camera bar during quiz
+  // Hide camera bar during quiz (but keep orbit controls so user can rotate)
   document.getElementById('bar').style.display = 'none';
+  oc.enabled = true; // user can still orbit/rotate the scene
 
   // Build options
   const optsDiv = document.getElementById('quiz-options');

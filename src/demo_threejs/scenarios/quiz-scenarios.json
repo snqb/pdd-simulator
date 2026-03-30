@@ -9,10 +9,10 @@
     "article": "ПДД КР, п. 6.2",
     "setup": {
       "trafficLight": "green",
-      "camera": {"x": 5, "y": 18, "z": 18, "tx": 0, "ty": 0, "tz": 0},
+      "camera": {"x": 12, "y": 15, "z": 12, "tx": 0, "ty": 0, "tz": 0},
       "actors": [
-        {"model": "car_corolla", "x": -3, "y": 0, "z": 10, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true},
-        {"model": "car_taxi", "x": 3, "y": 0, "z": -10, "rot": 3.14, "scale": 0.8, "label": "Такси", "arrow": true}
+        {"model": "car_corolla", "x": -3, "y": 0, "z": 12, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true},
+        {"model": "car_taxi", "x": 3, "y": 0, "z": -12, "rot": 3.14, "scale": 0.8, "label": "Такси", "arrow": true}
       ]
     }
   },
@@ -26,26 +26,26 @@
     "article": "ПДД КР, п. 6.2",
     "setup": {
       "trafficLight": "red",
-      "camera": {"x": 5, "y": 10, "z": 16, "tx": -3, "ty": 0, "tz": 7},
+      "camera": {"x": 6, "y": 10, "z": 18, "tx": -3, "ty": 0, "tz": 10},
       "actors": [
-        {"model": "car_corolla", "x": -3, "y": 0, "z": 7, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true, "highlight": "red"}
+        {"model": "car_corolla", "x": -3, "y": 0, "z": 10, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true, "highlight": "red"}
       ]
     }
   },
   {
     "id": "pedestrian-zebra",
     "title": "Пешеход на зебре",
-    "question": "Пешеход идёт по зебре. Что делает водитель?",
+    "question": "Пешеход переходит по зебре. Что делает водитель?",
     "options": ["Сигналит", "Уступает дорогу", "Объезжает", "Ускоряется"],
     "correct": 1,
     "explanation": "Водитель обязан уступить пешеходу на нерегулируемом переходе.",
     "article": "ПДД КР, п. 14.1",
     "setup": {
       "trafficLight": "green",
-      "camera": {"x": 8, "y": 8, "z": -4, "tx": 0, "ty": 1, "tz": -8},
+      "camera": {"x": 10, "y": 10, "z": -2, "tx": -1, "ty": 1, "tz": -8.5},
       "actors": [
-        {"model": "car_corolla", "x": -3, "y": 0, "z": -3, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true},
-        {"model": "lp_people", "x": 1, "y": 0, "z": -8.5, "rot": 1.57, "scale": 0.02, "label": "Пешеход", "arrow": true, "highlight": "green"}
+        {"model": "car_corolla", "x": -3, "y": 0, "z": -4, "rot": 0, "scale": 0.4, "label": "Toyota", "arrow": true},
+        {"model": "lp_people", "x": 0, "y": 0, "z": -8.5, "rot": 1.57, "scale": 0.035, "label": "Пешеход", "arrow": true, "highlight": "green"}
       ]
     }
   },
